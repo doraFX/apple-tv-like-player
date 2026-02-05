@@ -11,6 +11,13 @@
 
 A lightweight vanilla JavaScript plugin that enhances native `<video>` elements with an Apple TV-inspired cinematic UI.
 
+## 在线预览 | Live Demo
+
+✨ 体验播放器效果：  
+✨ Try the player here:
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blue?style=for-the-badge)](https://dorafx.github.io/apple-tv-like-player/)
+
 ---
 
 ## 特性 | Features
