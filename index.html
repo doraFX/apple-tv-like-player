@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Apple TV Like Video Player Demo</title>
+
+		<!-- 你的播放器样式 -->
+		<link rel="stylesheet" href="./apple-video-player.css" />
+
+		<style>
+			body {
+				margin: 0;
+				font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+				background: #0b0b0f;
+				color: #fff;
+			}
+
+			.wrap {
+				max-width: 980px;
+				margin: 0 auto;
+				padding: 28px 16px 60px;
+			}
+
+			.card {
+				background: rgba(255, 255, 255, .06);
+				border: 1px solid rgba(255, 255, 255, .12);
+				border-radius: 16px;
+				padding: 16px;
+				box-shadow: 0 18px 48px rgba(0, 0, 0, .4);
+			}
+
+			.hint {
+				opacity: .75;
+				font-size: 14px;
+				margin-top: 12px;
+				line-height: 1.6;
+			}
+
+			/* 可选：如果你页面里有 .video-wrapper，这里给个常见写法 */
+			.video-wrapper {
+				width: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="wrap">
+			<h1 style="margin:0 0 14px;">🍎 Apple TV Like Video Player</h1>
+
+			<div class="card">
+				<div class="video-wrapper">
+					<video src="./demo.mp4" preload="metadata"></video>
+				</div>
+
+				<div class="hint">
+					提示：点击画面播放/暂停；Space 控制播放；Enter 全屏。<br />
+					If video doesn’t load, change src to a valid mp4 URL.
+				</div>
+			</div>
+		</div>
+
+		<!-- 你的播放器脚本：会自动 enhance 页面内全部 video -->
+		<script src="./apple-video-player.js"></script>
+	</body>
+</html>
