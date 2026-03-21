@@ -4,23 +4,21 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Apple TV Like Video Player Demo</title>
+		<meta
+			name="description"
+			content="Apple TV-style custom HTML5 video player demo. A lightweight vanilla JavaScript plugin with cinematic UI and smooth controls."
+		/>
 
-		<!-- 你的播放器样式（保持不变） -->
 		<link rel="stylesheet" href="./apple-video-player.css" />
-
-		<link href="https://cdn.jsdelivr.net/npm/sf-mono-webfont@1.0.0/stylesheet.min.css" rel="stylesheet">
-		<link href="https://cdn.jsdelivr.net/npm/sf-font@1.0.0/stylesheet.min.css" rel="stylesheet">
-
+		<link href="https://cdn.jsdelivr.net/npm/sf-mono-webfont@1.0.0/stylesheet.min.css" rel="stylesheet" />
+		<link href="https://cdn.jsdelivr.net/npm/sf-font@1.0.0/stylesheet.min.css" rel="stylesheet" />
 
 		<style>
-			/* ==========================================================================
-           1. 基础重置 & 全局变量
-           ========================================================================== */
 			:root {
-				--bg: #FAFAFA;
-				--surface: #FFFFFF;
-				--text-main: #09090B;
-				--text-muted: #71717A;
+				--bg: #fafafa;
+				--surface: #ffffff;
+				--text-main: #09090b;
+				--text-muted: #71717a;
 				--border: rgba(0, 0, 0, 0.06);
 				--radius-lg: 32px;
 				--radius-md: 20px;
@@ -34,6 +32,11 @@
 				padding: 0;
 			}
 
+			html,
+			body {
+				min-height: 100%;
+			}
+
 			body {
 				font-family: var(--font-sans);
 				background-color: var(--bg);
@@ -43,7 +46,6 @@
 				-webkit-font-smoothing: antialiased;
 			}
 
-			/* 页面全局噪点质感（打破纯色塑料感，提升拟真度） */
 			.noise {
 				position: fixed;
 				top: 0;
@@ -56,9 +58,6 @@
 				background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
 			}
 
-			/* ==========================================================================
-           2. 动效 1：流体鼠标跟随背景 (Fluid Blob)
-           ========================================================================== */
 			.ambient-blob {
 				position: fixed;
 				width: 600px;
@@ -72,14 +71,10 @@
 				filter: blur(40px);
 			}
 
-			/* ==========================================================================
-           3. 布局 & 核心容器
-           ========================================================================== */
 			.container {
 				position: relative;
 				z-index: 1;
 				max-width: 1280px;
-				/* 适当收束宽度，让16:9比例更精致 */
 				margin: 0 auto;
 				padding: 6vw 4vw;
 				display: flex;
@@ -87,7 +82,6 @@
 				gap: 40px;
 			}
 
-			/* 头部介绍 */
 			.hero {
 				display: flex;
 				flex-direction: column;
@@ -120,9 +114,6 @@
 				color: var(--text-muted);
 			}
 
-			/* ==========================================================================
-           4. 上下栏 Grid 网格布局 (第一行通栏100%，第二行 5:7 黄金比例)
-           ========================================================================== */
 			.bento-grid {
 				display: grid;
 				grid-template-columns: repeat(12, 1fr);
@@ -140,7 +131,6 @@
 				padding: 32px;
 			}
 
-			/* 上栏：视频卡片 (占据全部 12 列) */
 			.card.video-card {
 				grid-column: span 12;
 				padding: 12px;
@@ -151,7 +141,6 @@
 				box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.08);
 			}
 
-			/* 下栏左侧：简介信息 (占据 5 列) */
 			.card.info-card {
 				grid-column: span 5;
 				display: flex;
@@ -159,7 +148,6 @@
 				justify-content: center;
 			}
 
-			/* 下栏右侧：代码使用说明 (占据 7 列) */
 			.card.code-card {
 				grid-column: span 7;
 				display: flex;
@@ -167,9 +155,6 @@
 				justify-content: center;
 			}
 
-			/* ==========================================================================
-           5. 动效 2：卡片 Hover 聚光灯效 (Spotlight Effect)
-           ========================================================================== */
 			.spotlight-card::before {
 				content: "";
 				position: absolute;
@@ -188,13 +173,9 @@
 				opacity: 1;
 			}
 
-			/* ==========================================================================
-           核心修改：视频包装器 严格 16:9 画幅
-           ========================================================================== */
 			.video-wrapper {
 				width: 100%;
 				aspect-ratio: 16 / 9;
-				/* 强制 16:9 比例 */
 				border-radius: calc(var(--radius-lg) - 8px);
 				overflow: hidden;
 				background: #000;
@@ -206,19 +187,16 @@
 				width: 100%;
 				height: 100%;
 				object-fit: cover;
-				/* 保证视频填满整个 16:9 区域 */
 				display: block;
 			}
 
-			/* ==========================================================================
-           排版与精美组件 (易读、高级)
-           ========================================================================== */
 			.card-label {
 				font-size: 12px;
 				text-transform: uppercase;
 				color: var(--text-muted);
 				font-weight: 600;
 				margin-bottom: 12px;
+				letter-spacing: 0.08em;
 			}
 
 			.card-title {
@@ -235,10 +213,9 @@
 				line-height: 1.6;
 			}
 
-			/* 标签强调样式 */
 			code.inline-tag {
-				background: #F4F4F5;
-				border: 1px solid #E4E4E7;
+				background: #f4f4f5;
+				border: 1px solid #e4e4e7;
 				border-radius: 6px;
 				padding: 2px 6px;
 				font-family: var(--font-mono);
@@ -246,13 +223,10 @@
 				color: var(--text-main);
 			}
 
-			/* ==========================================================================
-           精美 macOS 风格代码块
-           ========================================================================== */
 			.code-window {
-				background: #09090B;
+				background: #09090b;
 				border-radius: 16px;
-				border: 1px solid #27272A;
+				border: 1px solid #27272a;
 				overflow: hidden;
 				margin-bottom: 16px;
 				box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
@@ -265,7 +239,7 @@
 				gap: 8px;
 				padding: 14px 16px;
 				background: rgba(255, 255, 255, 0.03);
-				border-bottom: 1px solid #27272A;
+				border-bottom: 1px solid #27272a;
 				align-items: center;
 			}
 
@@ -276,15 +250,15 @@
 			}
 
 			.code-dot.red {
-				background: #FF5F56;
+				background: #ff5f56;
 			}
 
 			.code-dot.yellow {
-				background: #FFBD2E;
+				background: #ffbd2e;
 			}
 
 			.code-dot.green {
-				background: #27C93F;
+				background: #27c93f;
 			}
 
 			.code-body {
@@ -293,34 +267,28 @@
 				font-family: var(--font-mono);
 				font-size: 14px;
 				line-height: 1.7;
-				color: #A1A1AA;
+				color: #a1a1aa;
 			}
-			
+
 			.code-body span {
 				font-family: var(--font-mono);
 			}
 
-			/* 语法高亮颜色 (Awwwards 风格) */
 			.token.tag {
-				color: #F472B6;
+				color: #f472b6;
 			}
 
-			/* 粉色标签 */
 			.token.attr {
-				color: #38BDF8;
+				color: #38bdf8;
 			}
 
-			/* 蓝色属性 */
 			.token.string {
-				color: #A3E635;
+				color: #a3e635;
 			}
 
-			/* 绿色字符串 */
 			.token.punct {
-				color: #71717A;
+				color: #71717a;
 			}
-
-			/* 标点符号 */
 
 			.hint-text {
 				font-size: 0.95rem;
@@ -331,9 +299,6 @@
 				font-weight: 500;
 			}
 
-			/* ==========================================================================
-           6. 动效 3 & 4：页面入场错开加载 (Staggered Reveal) & 视差缩放 (Parallax Scale)
-           ========================================================================== */
 			.reveal-up {
 				opacity: 0;
 				transform: translateY(40px);
@@ -351,7 +316,45 @@
 				transform: translateY(0) scale(1);
 			}
 
-			/* 响应式处理 */
+			.lang-switcher {
+				position: fixed;
+				top: 24px;
+				right: 24px;
+				z-index: 10000;
+				display: flex;
+				gap: 8px;
+				padding: 8px;
+				background: rgba(255, 255, 255, 0.72);
+				backdrop-filter: blur(16px);
+				-webkit-backdrop-filter: blur(16px);
+				border: 1px solid rgba(0, 0, 0, 0.06);
+				border-radius: 999px;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+			}
+
+			.lang-btn {
+				border: none;
+				background: transparent;
+				color: var(--text-muted);
+				font-family: var(--font-sans);
+				font-size: 13px;
+				font-weight: 600;
+				padding: 8px 12px;
+				border-radius: 999px;
+				cursor: pointer;
+				transition: all 0.2s ease;
+			}
+
+			.lang-btn:hover {
+				background: rgba(0, 0, 0, 0.05);
+				color: var(--text-main);
+			}
+
+			.lang-btn.active {
+				background: #09090b;
+				color: #ffffff;
+			}
+
 			@media (max-width: 1024px) {
 				.card.info-card {
 					grid-column: span 12;
@@ -383,52 +386,60 @@
 					padding: 16px;
 					font-size: 12px;
 				}
+
+				.lang-switcher {
+					top: 16px;
+					right: 16px;
+					gap: 4px;
+					padding: 6px;
+				}
+
+				.lang-btn {
+					font-size: 12px;
+					padding: 6px 10px;
+				}
 			}
 		</style>
 	</head>
 	<body>
+		<div class="lang-switcher" aria-label="Language Switcher">
+			<button class="lang-btn active" data-lang-btn="zh-CN" type="button">中</button>
+			<button class="lang-btn" data-lang-btn="en" type="button">EN</button>
+			<button class="lang-btn" data-lang-btn="ja" type="button">日</button>
+			<button class="lang-btn" data-lang-btn="ko" type="button">한</button>
+		</div>
 
-		<!-- 噪点遮罩层 -->
 		<div class="noise"></div>
-
-		<!-- 动效 1：环境流体光效背景 -->
 		<div class="ambient-blob" id="blob"></div>
 
 		<div class="container">
-
-			<!-- 头部区域 -->
 			<header class="hero reveal-up" style="transition-delay: 0.1s;">
-				<div class="badge">Component v1.0</div>
-				<h1>Apple TV Like <br><span>Html5 Video Player.</span></h1>
+				<div class="badge" data-i18n="badge">Component v1.0</div>
+				<h1>
+					<span data-i18n="heroLine1">Apple TV Like</span><br />
+					<span data-i18n="heroLine2">HTML5 Video Player.</span>
+				</h1>
 			</header>
 
-			<!-- Bento Grid 核心区域 -->
 			<main class="bento-grid">
-
-				<!-- ====== 上栏：全宽 16:9 核心视频区域 (动效 4：视差缩放显现) ====== -->
 				<div class="card video-card reveal-scale" style="transition-delay: 0.2s;">
 					<div class="video-wrapper">
-						<!-- 你的视频标签（保持不变） -->
 						<video src="./demo.mp4" preload="metadata"></video>
 					</div>
 				</div>
 
-				<!-- ====== 下栏左侧：简介区 ====== -->
 				<div class="card info-card spotlight-card reveal-up" style="transition-delay: 0.3s;">
 					<div>
-						<div class="card-label">Overview</div>
-						<h2 class="card-title">简介</h2>
-						<p class="card-desc">一个轻量级原生 JS 视频播放器插件，可将普通 <code class="inline-tag">&lt;video&gt;</code>
-							元素无缝增强为具有 Apple TV 风格交互美学体验的高级播放器。丝滑流畅，无需繁杂配置。</p>
+						<div class="card-label" data-i18n="overviewLabel">Overview</div>
+						<h2 class="card-title" data-i18n="overviewTitle">简介</h2>
+						<p class="card-desc" id="overviewDesc"></p>
 					</div>
 				</div>
 
-				<!-- ====== 下栏右侧：使用说明与代码 ====== -->
 				<div class="card code-card spotlight-card reveal-up" style="transition-delay: 0.4s;">
-					<div class="card-label">Quick Start</div>
-					<h2 class="card-title" style="margin-bottom: 20px;">使用方法</h2>
+					<div class="card-label" data-i18n="quickStartLabel">Quick Start</div>
+					<h2 class="card-title" style="margin-bottom: 20px;" data-i18n="usageTitle">使用方法</h2>
 
-					<!-- macOS 风格极美代码框 -->
 					<div class="code-window">
 						<div class="code-header">
 							<div class="code-dot red"></div>
@@ -436,8 +447,7 @@
 							<div class="code-dot green"></div>
 						</div>
 						<div class="code-body">
-							<pre
-								style="margin: 0;"><code><span class="token punct">&lt;</span><span class="token tag">link</span> <span class="token attr">rel</span><span class="token punct">=</span><span class="token string">"stylesheet"</span> <span class="token attr">href</span><span class="token punct">=</span><span class="token string">"apple-video-player.css"</span><span class="token punct">&gt;</span>
+							<pre style="margin: 0;"><code><span class="token punct">&lt;</span><span class="token tag">link</span> <span class="token attr">rel</span><span class="token punct">=</span><span class="token string">"stylesheet"</span> <span class="token attr">href</span><span class="token punct">=</span><span class="token string">"apple-video-player.css"</span><span class="token punct">&gt;</span>
 <span class="token punct">&lt;</span><span class="token tag">script</span> <span class="token attr">src</span><span class="token punct">=</span><span class="token string">"apple-video-player.js"</span><span class="token punct">&gt;</span><span class="token punct">&lt;/</span><span class="token tag">script</span><span class="token punct">&gt;</span>
 
 <span class="token punct">&lt;</span><span class="token tag">video</span> <span class="token attr">src</span><span class="token punct">=</span><span class="token string">"demo.mp4"</span><span class="token punct">&gt;</span><span class="token punct">&lt;/</span><span class="token tag">video</span><span class="token punct">&gt;</span></code></pre>
@@ -446,36 +456,128 @@
 
 					<div class="hint-text">
 						<span>✨</span>
-						<span>加载后会自动增强所有视频元素。</span>
+						<span data-i18n="hintText">加载后会自动增强所有视频元素。</span>
 					</div>
 				</div>
-
 			</main>
 		</div>
 
-		<!-- 你的播放器脚本（保持不变） -->
 		<script src="./apple-video-player.js"></script>
 
-		<!-- 高级交互动效脚本 -->
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
-
-				// ==========================================
-				// 动效 1: 丝滑的流体鼠标跟随背景 (Lerp 缓动)
-				// ==========================================
 				const blob = document.getElementById('blob');
 				let mouseX = window.innerWidth / 2;
 				let mouseY = window.innerHeight / 2;
 				let blobX = mouseX;
 				let blobY = mouseY;
 
-				window.addEventListener('mousemove', (e) => {
+				const translations = {
+					'zh-CN': {
+						pageTitle: 'Apple TV 风格 HTML5 视频播放器演示',
+						badge: '组件 v1.0',
+						heroLine1: 'Apple TV Like',
+						heroLine2: 'HTML5 Video Player.',
+						overviewLabel: 'Overview',
+						overviewTitle: '简介',
+						overviewDesc:
+							'一个轻量级原生 JS 视频播放器插件，可将普通 <code class="inline-tag">&lt;video&gt;</code> 元素无缝增强为具有 Apple TV 风格交互美学体验的高级播放器。丝滑流畅，无需繁杂配置。',
+						quickStartLabel: 'Quick Start',
+						usageTitle: '使用方法',
+						hintText: '加载后会自动增强所有视频元素。'
+					},
+					en: {
+						pageTitle: 'Apple TV Like HTML5 Video Player Demo',
+						badge: 'Component v1.0',
+						heroLine1: 'Apple TV Like',
+						heroLine2: 'HTML5 Video Player.',
+						overviewLabel: 'Overview',
+						overviewTitle: 'Description',
+						overviewDesc:
+							'A lightweight vanilla JavaScript plugin that seamlessly enhances ordinary <code class="inline-tag">&lt;video&gt;</code> elements into a premium player with an Apple TV-inspired cinematic interface. Smooth, elegant, and zero setup.',
+						quickStartLabel: 'Quick Start',
+						usageTitle: 'Usage',
+						hintText: 'All video elements will be enhanced automatically after loading.'
+					},
+					ja: {
+						pageTitle: 'Apple TV風 HTML5ビデオプレイヤー デモ',
+						badge: 'コンポーネント v1.0',
+						heroLine1: 'Apple TV Like',
+						heroLine2: 'HTML5 Video Player.',
+						overviewLabel: 'Overview',
+						overviewTitle: '概要',
+						overviewDesc:
+							'軽量なバニラ JavaScript 製ビデオプレイヤープラグインです。通常の <code class="inline-tag">&lt;video&gt;</code> 要素を、Apple TV風のシネマティックで洗練された操作体験を持つ高品質プレイヤーへシームレスに強化します。なめらかで、美しく、設定もほぼ不要です。',
+						quickStartLabel: 'Quick Start',
+						usageTitle: '使い方',
+						hintText: '読み込み後、ページ内のすべての video 要素を自動的に強化します。'
+					},
+					ko: {
+						pageTitle: 'Apple TV 스타일 HTML5 비디오 플레이어 데모',
+						badge: '컴포넌트 v1.0',
+						heroLine1: 'Apple TV Like',
+						heroLine2: 'HTML5 Video Player.',
+						overviewLabel: 'Overview',
+						overviewTitle: '소개',
+						overviewDesc:
+							'가벼운 바닐라 JavaScript 비디오 플레이어 플러그인으로, 일반 <code class="inline-tag">&lt;video&gt;</code> 요소를 Apple TV 스타일의 시네마틱하고 세련된 인터페이스를 갖춘 고급 플레이어로 자연스럽게 확장합니다. 부드럽고 우아하며 복잡한 설정이 필요 없습니다.',
+						quickStartLabel: 'Quick Start',
+						usageTitle: '사용 방법',
+						hintText: '로드 후 모든 video 요소가 자동으로 향상됩니다.'
+					}
+				};
+
+				function normalizeLang(lang) {
+					if (!lang) return 'en';
+					const lower = lang.toLowerCase();
+					if (lower.startsWith('zh')) return 'zh-CN';
+					if (lower.startsWith('ja')) return 'ja';
+					if (lower.startsWith('ko')) return 'ko';
+					return 'en';
+				}
+
+				function setLanguage(lang) {
+					const dict = translations[lang] || translations.en;
+
+					document.documentElement.lang = lang;
+					document.title = dict.pageTitle;
+					localStorage.setItem('applePlayerDemoLang', lang);
+
+					document.querySelectorAll('[data-i18n]').forEach(el => {
+						const key = el.getAttribute('data-i18n');
+						if (dict[key]) {
+							el.textContent = dict[key];
+						}
+					});
+
+					const overviewDesc = document.getElementById('overviewDesc');
+					if (overviewDesc) {
+						overviewDesc.innerHTML = dict.overviewDesc;
+					}
+
+					document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+						btn.classList.toggle('active', btn.getAttribute('data-lang-btn') === lang);
+					});
+				}
+
+				const savedLang = localStorage.getItem('applePlayerDemoLang');
+				const browserLang = normalizeLang(navigator.language);
+				const initialLang = savedLang || browserLang || 'en';
+				setLanguage(initialLang);
+
+				document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const lang = btn.getAttribute('data-lang-btn');
+						setLanguage(lang);
+					});
+				});
+
+				window.addEventListener('mousemove', e => {
 					mouseX = e.clientX;
 					mouseY = e.clientY;
 				});
 
 				function renderBlob() {
-					// 使用 Lerp 算法让移动拥有极度顺滑的阻尼感
 					blobX += (mouseX - blobX) * 0.05;
 					blobY += (mouseY - blobY) * 0.05;
 					blob.style.left = `${blobX}px`;
@@ -484,12 +586,9 @@
 				}
 				renderBlob();
 
-				// ==========================================
-				// 动效 2: Bento 卡片 Hover 聚光灯效 (Spotlight)
-				// ==========================================
 				const cards = document.querySelectorAll('.spotlight-card');
 				cards.forEach(card => {
-					card.addEventListener('mousemove', (e) => {
+					card.addEventListener('mousemove', e => {
 						const rect = card.getBoundingClientRect();
 						const x = e.clientX - rect.left;
 						const y = e.clientY - rect.top;
@@ -498,21 +597,17 @@
 					});
 				});
 
-				// ==========================================
-				// 动效 3 & 4: 视差滚动与错开浮现 (Intersection Observer)
-				// ==========================================
 				const observerOptions = {
 					root: null,
 					rootMargin: '0px',
 					threshold: 0.1
 				};
 
-				const observer = new IntersectionObserver((entries, observer) => {
+				const observer = new IntersectionObserver((entries, observerRef) => {
 					entries.forEach(entry => {
 						if (entry.isIntersecting) {
 							entry.target.classList.add('is-revealed');
-							// 触发后即可取消观察，提升性能
-							observer.unobserve(entry.target);
+							observerRef.unobserve(entry.target);
 						}
 					});
 				}, observerOptions);
