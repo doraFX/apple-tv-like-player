@@ -41,7 +41,8 @@
 		static auto(root = document) {
 			const initAll = () => {
 				const scope = root && root.querySelectorAll ? root : document;
-				scope.querySelectorAll("video").forEach((v) => AppleTVLikePlayer.enhance(v));
+				scope.querySelectorAll('video:not([data-atvp-ignore="1"])')
+				  .forEach((v) => AppleTVLikePlayer.enhance(v));
 			};
 
 			if (document.readyState === "loading") {
@@ -75,6 +76,7 @@
 					m.addedNodes.forEach((node) => {
 						if (!(node instanceof Element)) return;
 						if (node.tagName === "VIDEO") {
+							if (node.dataset.atvpIgnore === "1") return;
 							AppleTVLikePlayer.enhance(node);
 							return;
 						}

@@ -46,6 +46,19 @@ All video elements will be enhanced automatically.
 
 ---
 
+## 🚫 Exclude Videos
+
+If you want to prevent certain `<video>` elements from being enhanced,
+just add the attribute:
+
+```html
+<video src="bg.mp4" data-atvp-ignore="1"></video>
+```
+
+Videos with `data-atvp-ignore="1"` will be ignored by the player.
+
+---
+
 ## ⌨️ Shortcuts
 
 | Key   | Action            |
